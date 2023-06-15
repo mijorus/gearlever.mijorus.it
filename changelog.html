@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/x-icon" href="/icon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Import element definition -->
+    <title>Changelog - Gear lever</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="my"><a href="/">⬅ Back home</a></div>
+        <div class="changelog">
+            <h1 style="margin-top: 0;">Changelog</h1>
+            <ul class="changelog-releases"></ul>
+        </div>
+        <div class="my">
+            <p>
+                This page is automatically generated from an <em>appdata.xml</em><br>
+                Do you want to see how this is made? Check out the code <a href="https://github.com/mijorus/gearlever.mijorus.it">on Github</a>
+            </p>
+        </div>
+    </div>
+</body>
+<style>
+    body {
+        font-family: sans-serif;
+    }
+
+    .changelog {
+        padding: 30px;
+        border: 1px solid black;
+        border-radius: 20px;
+    }
+
+    .my {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        display: block;
+    }
+
+    li {
+        margin-bottom: 20px;
+    }
+
+    li:first-child {
+        font-size: larger;
+    }
+
+    @media screen and (min-width: 768px) {
+        .container {
+            margin: auto;
+            max-width: 60%;
+        }
+    }
+</style>
+
+<script>
+    async function main() {
+        const response = await fetch('https://raw.githubusercontent.com/mijorus/gearlever/master/data/it.mijorus.gearlever.appdata.xml.in');
+
+        const xml = await response.text();
+
+        const parser = new DOMParser();
+        changelogXml = parser.parseFromString(xml, 'text/xml');
+        
+        const changelogReleases = document.querySelector('.changelog-releases');
+        for (release of changelogXml.getElementsByTagName('release')) {
+            console.log(release);
+            const li = document.createElement('li');
+            const lidiv = document.createElement('div');
+
+            lidiv.innerHTML +=  `<strong>${release.getAttribute('version')}</strong>`;
+            lidiv.append( ...release.getElementsByTagName('description')[0].childNodes );
+            li.append(lidiv);
+
+            changelogReleases.append(li);
+        }
+    }
+
+    main();
+</script>
+
+</html>
